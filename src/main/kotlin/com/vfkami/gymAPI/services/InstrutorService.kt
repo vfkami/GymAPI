@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service
 class InstrutorService (val instrutorRepository: InstrutorRepository){
     @Transactional
     fun save(instrutorModel : InstrutorModel) = instrutorRepository.save(instrutorModel)
-    @Transactional
-    fun delete(instrutorModel: InstrutorModel) = instrutorRepository.delete(instrutorModel)
     fun existsByCfe(cfe: String) = instrutorRepository.existsByCFE(cfe)
     fun existsByCpf(cpf: String) = instrutorRepository.existsByCpf(cpf)
     fun findByCpf(cpf : String) = instrutorRepository.findById(cpf)

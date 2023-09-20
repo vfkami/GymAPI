@@ -15,7 +15,10 @@ class AlunoModel (
     var peso: Double = 0.00,
 
     @Column(nullable = false)
-    var diaPagamento : Int = 1
+    var diaPagamento : Int = 1,
+
+    @Column(nullable = false, unique = true)
+    var cpf : String = ""
 ) {
 
 }

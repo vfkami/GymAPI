@@ -25,8 +25,8 @@ class UsuarioModel (
     var dataCadastro: LocalDateTime = LocalDateTime.MIN,
 
     @Column(nullable = false)
-    var ativo: Boolean  = true
+    var ativo: Boolean  = true,
 
-){
+    var dataExclusao: LocalDateTime? = null,
 
-}
+)

@@ -1,8 +1,9 @@
 package com.vfkami.gymAPI.controllers
 
 import com.vfkami.gymAPI.dtos.AlunoDto
-import com.vfkami.gymAPI.model.AlunoModel
+import com.vfkami.gymAPI.model.*
 import com.vfkami.gymAPI.services.AlunoService
+import com.vfkami.gymAPI.services.UsuarioService
 import com.vfkami.gymAPI.utils.Utils
 import jakarta.validation.Valid
 import org.springframework.beans.BeanUtils
@@ -21,8 +22,7 @@ import java.util.*
 
 @RestController
 @RequestMapping("/aluno")
-class AlunoController (val alunoService: AlunoService, val utils: Utils) {
-
+class AlunoController (val alunoService: AlunoService, val usuarioService: UsuarioService, val utils: Utils) {
     @GetMapping
     fun getAllAlunos() = ResponseEntity.status(HttpStatus.OK).body(alunoService.findAll())
 
@@ -38,20 +38,30 @@ class AlunoController (val alunoService: AlunoService, val utils: Utils) {
 
     @PostMapping
     fun saveAluno(@RequestBody @Valid alunoDto : AlunoDto) : ResponseEntity<Any>{
-        if(alunoService.existsByCpf(alunoDto.cpf))
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Aluno já existe para o CPF: ${alunoDto.cpf}")
-
         if(!utils.validarCpf(alunoDto.cpf))
             return ResponseEntity.status(HttpStatus.CONFLICT).body("CPF: ${alunoDto.cpf} Inválido")
 
-        val matricula : String = utils.gerarMatricula(LocalDateTime.now())
-        var alunoModel = AlunoModel()
+        if(alunoService.existsByCpf(alunoDto.cpf))
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Aluno já existe para o CPF: ${alunoDto.cpf}")
 
+        if(usuarioService.existsByCpf(alunoDto.cpf))
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Usuário já existe para o CPF: ${alunoDto.cpf}")
+
+        if(usuarioService.existsByLogin(alunoDto.login))
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Usuário já existe com o login: ${alunoDto.login}")
+
+        val alunoModel = AlunoModel()
         BeanUtils.copyProperties(alunoDto, alunoModel)
-        alunoModel.matricula = matricula
 
-        val saved = alunoService.save(alunoModel)
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved)
+        val usuarioModel = UsuarioModel()
+        BeanUtils.copyProperties(alunoDto, usuarioModel)
+
+        alunoModel.matricula = utils.gerarMatricula(LocalDateTime.now())
+
+        var saved = alunoService.save(alunoModel)
+        var saved2 = usuarioService.save(usuarioModel)
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("Aluno matriculado com sucesso!")
     }
 
 }

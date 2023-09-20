@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service
 class AlunoService (val alunoRepository: AlunoRepository) {
     @Transactional
     fun save(alunoModel : AlunoModel) = alunoRepository.save(alunoModel)
-    @Transactional
-    fun delete(alunoModel: AlunoModel) = alunoRepository.delete(alunoModel)
     fun existsByMatricula(matricula: String) = alunoRepository.existsByMatricula(matricula)
     fun existsByCpf(cpf: String) = alunoRepository.existsByCpf(cpf)
     fun findByMatricula(cpf : String) = alunoRepository.findById(cpf)
