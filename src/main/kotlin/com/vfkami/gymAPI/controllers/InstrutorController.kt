@@ -1,11 +1,8 @@
 package com.vfkami.gymAPI.controllers
 
-import com.vfkami.gymAPI.dtos.AlunoDto
 import com.vfkami.gymAPI.dtos.InstrutorDto
-import com.vfkami.gymAPI.model.AlunoModel
 import com.vfkami.gymAPI.model.InstrutorModel
 import com.vfkami.gymAPI.model.UsuarioModel
-import com.vfkami.gymAPI.services.AlunoService
 import com.vfkami.gymAPI.services.InstrutorService
 import com.vfkami.gymAPI.services.UsuarioService
 import com.vfkami.gymAPI.utils.Utils
@@ -14,7 +11,6 @@ import org.springframework.beans.BeanUtils
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.time.LocalDateTime
 import java.util.*
 
 
@@ -39,11 +35,14 @@ class InstrutorController (val instrutorService: InstrutorService, val usuarioSe
         if(!utils.validarCpf(instrutorDto.cpf))
             return ResponseEntity.status(HttpStatus.CONFLICT).body("CPF: ${instrutorDto.cpf} Inválido")
 
+        if(usuarioService.existsByCpf(instrutorDto.cpf))
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Usuário já existe para o CPF: ${instrutorDto.cpf}")
+
         if(instrutorService.existsByCpf(instrutorDto.cpf))
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Instrutor já existe para o CPF: ${instrutorDto.cpf}")
 
-        if(usuarioService.existsByCpf(instrutorDto.cpf))
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Usuário já existe para o CPF: ${instrutorDto.cpf}")
+        if(instrutorService.existsByCfe(instrutorDto.CFE))
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Instrutor já existe com o CFE Nº: ${instrutorDto.CFE}")
 
         if(usuarioService.existsByLogin(instrutorDto.login))
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Usuário já existe com o login: ${instrutorDto.login}")
@@ -54,8 +53,8 @@ class InstrutorController (val instrutorService: InstrutorService, val usuarioSe
         val usuarioModel = UsuarioModel()
         BeanUtils.copyProperties(instrutorDto, usuarioModel)
 
-        var saved = instrutorService.save(instrutorModel)
-        var saved2 = usuarioService.save(usuarioModel)
+        instrutorService.save(instrutorModel)
+        usuarioService.save(usuarioModel)
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Instrutor matriculado com sucesso!")
     }

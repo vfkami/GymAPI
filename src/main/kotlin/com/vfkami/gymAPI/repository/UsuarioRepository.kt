@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface UsuarioRepository : JpaRepository<UsuarioModel, String> {
     fun existsByCpf(cpf : String) : Boolean
-
     fun existsByLogin(login : String) : Boolean
 
 }

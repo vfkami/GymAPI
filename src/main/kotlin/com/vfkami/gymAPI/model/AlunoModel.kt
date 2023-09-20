@@ -1,6 +1,6 @@
-package com.vfkami.gymAPI.model;
+package com.vfkami.gymAPI.model
 
-import jakarta.persistence.*;
+import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -19,7 +19,5 @@ class AlunoModel (
 
     @Column(nullable = false, unique = true)
     var cpf : String = ""
-) {
-
-}
+)
 

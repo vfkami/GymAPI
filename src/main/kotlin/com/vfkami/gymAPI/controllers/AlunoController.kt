@@ -3,6 +3,7 @@ package com.vfkami.gymAPI.controllers
 import com.vfkami.gymAPI.dtos.AlunoDto
 import com.vfkami.gymAPI.model.*
 import com.vfkami.gymAPI.services.AlunoService
+import com.vfkami.gymAPI.services.MensalidadeService
 import com.vfkami.gymAPI.services.UsuarioService
 import com.vfkami.gymAPI.utils.Utils
 import jakarta.validation.Valid
@@ -22,7 +23,7 @@ import java.util.*
 
 @RestController
 @RequestMapping("/aluno")
-class AlunoController (val alunoService: AlunoService, val usuarioService: UsuarioService, val utils: Utils) {
+class AlunoController (val alunoService: AlunoService, val usuarioService: UsuarioService, val mensalidadeService: MensalidadeService, val utils: Utils) {
     @GetMapping
     fun getAllAlunos() = ResponseEntity.status(HttpStatus.OK).body(alunoService.findAll())
 
@@ -38,6 +39,8 @@ class AlunoController (val alunoService: AlunoService, val usuarioService: Usuar
 
     @PostMapping
     fun saveAluno(@RequestBody @Valid alunoDto : AlunoDto) : ResponseEntity<Any>{
+        val novaMatricula = utils.gerarMatricula(LocalDateTime.now(), alunoService.alunosCadastradosCount() + 1)
+
         if(!utils.validarCpf(alunoDto.cpf))
             return ResponseEntity.status(HttpStatus.CONFLICT).body("CPF: ${alunoDto.cpf} Inválido")
 
@@ -50,16 +53,20 @@ class AlunoController (val alunoService: AlunoService, val usuarioService: Usuar
         if(usuarioService.existsByLogin(alunoDto.login))
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Usuário já existe com o login: ${alunoDto.login}")
 
+        if(alunoService.existsByMatricula(novaMatricula))
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Erro ao gerar número de matrícula")
+
         val alunoModel = AlunoModel()
         BeanUtils.copyProperties(alunoDto, alunoModel)
 
         val usuarioModel = UsuarioModel()
         BeanUtils.copyProperties(alunoDto, usuarioModel)
 
-        alunoModel.matricula = utils.gerarMatricula(LocalDateTime.now())
+        alunoModel.matricula = novaMatricula
 
-        var saved = alunoService.save(alunoModel)
-        var saved2 = usuarioService.save(usuarioModel)
+        alunoService.save(alunoModel)
+        usuarioService.save(usuarioModel)
+        mensalidadeService.save(alunoModel.matricula, alunoModel.diaPagamento)
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Aluno matriculado com sucesso!")
     }

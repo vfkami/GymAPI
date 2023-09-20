@@ -7,8 +7,6 @@ import java.time.format.DateTimeFormatter
 @Component
 class Utils {
     companion object {
-        var qtdRegistrado : Int = 1
-
         fun calculateFirstDigit(partialCpf : String): Int{
             val peso = arrayListOf(10, 9, 8, 7, 6, 5, 4, 3, 2)
             var soma = 0
@@ -42,13 +40,24 @@ class Utils {
         return cleanedCpf.endsWith("$firstDigit$secondDigit")
     }
 
-    fun gerarMatricula(dataCadastro : LocalDateTime) : String {
+    fun gerarMatricula(dataCadastro : LocalDateTime, qtdRegistrado : Long) : String {
         val initial : String = dataCadastro.format(DateTimeFormatter.ofPattern("yyyyMM"))
-        val cadastro : String = "0".repeat(5 - qtdRegistrado.toString().length) + qtdRegistrado
-
-        qtdRegistrado += 1
+        val cadastro : String = "0".repeat(5 - qtdRegistrado.toString().length) + (qtdRegistrado)
 
         return initial + cadastro
+    }
+
+    fun gerarProximoDiaPagamento(diaVencimento : Int) : LocalDateTime {
+        val today = LocalDateTime.now()
+
+        if (today.dayOfMonth >= diaVencimento) {
+            val newDate = LocalDateTime.of(today.year, today.month, diaVencimento, 0, 0, 0)
+            return newDate.plusMonths(1)
+        }
+
+        return today.plusDays(diaVencimento.toLong() - today.dayOfMonth)
+
+
     }
 
 
