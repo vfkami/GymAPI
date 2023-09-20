@@ -16,5 +16,7 @@ class AlunoDto {
     var peso : Double = 0.00
     @NotBlank
     var diaPagamento : Int = 0
+    @NotBlank
+    var valorMensalidade : Double = 0.00
     var matricula : String = ""
 }

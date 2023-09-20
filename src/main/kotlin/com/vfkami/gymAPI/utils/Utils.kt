@@ -56,10 +56,5 @@ class Utils {
         }
 
         return today.plusDays(diaVencimento.toLong() - today.dayOfMonth)
-
-
     }
-
-
-
 }

@@ -13,7 +13,7 @@ class InstrutorModel (
     @Column(nullable = false)
     var salario : Double = 0.00,
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, )
     var cpf : String = ""
 
 )

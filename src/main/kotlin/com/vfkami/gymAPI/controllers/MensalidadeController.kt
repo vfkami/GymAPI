@@ -3,18 +3,13 @@ package com.vfkami.gymAPI.controllers
 import com.vfkami.gymAPI.services.MensalidadeService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 import java.util.UUID
 
 @RestController
 @RequestMapping("mensalidade")
 class MensalidadeController (val mensalidadeService: MensalidadeService){
-
     @GetMapping("/{matricula}")
     fun getAllMensalidadesByMatricula(@PathVariable(value = "matricula") matricula : String) = mensalidadeService.findAllByMatricula(matricula)
 
@@ -27,9 +22,16 @@ class MensalidadeController (val mensalidadeService: MensalidadeService){
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Aluno sem mensalidades a pagar!")
     }
-    @PatchMapping("/pagar/{id}")
+    @PutMapping("/pagar/{id}")
     fun pagarMensalidadeById(@PathVariable(value = "id") id : UUID) : ResponseEntity<Any>{
-        val mensalidade = mensalidadeService.pagarMensalidade(id)
+        val mensalidadeModel = mensalidadeService.findById(id)
+        if (!mensalidadeModel.isPresent)
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ocorreu um erro: Mensalidade não encontrada!")
+
+        if(mensalidadeService.verifyMensalidadeAlreadyPago(mensalidadeModel.get().id))
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Ocorreu um erro: Mensalidade já está paga!")
+
+        val mensalidade = mensalidadeService.pagarMensalidade(mensalidadeModel.get())
 
         if (mensalidade.isPresent)
             return ResponseEntity.status(HttpStatus.OK).body(mensalidade)
@@ -56,5 +58,4 @@ class MensalidadeController (val mensalidadeService: MensalidadeService){
 
         return ResponseEntity.status(HttpStatus.OK).body(mensalidade.filter{it.diaVencimento < LocalDateTime.now()})
     }
-
 }

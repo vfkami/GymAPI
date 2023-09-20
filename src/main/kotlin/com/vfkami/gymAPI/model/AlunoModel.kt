@@ -18,6 +18,7 @@ class AlunoModel (
     var diaPagamento : Int = 1,
 
     @Column(nullable = false, unique = true)
-    var cpf : String = ""
+    var cpf : String = "",
+
 )
 

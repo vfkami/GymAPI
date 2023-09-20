@@ -11,7 +11,6 @@ interface AlunoRepository : JpaRepository<AlunoModel, String> {
     fun existsByCpf(cpf : String) : Boolean
     @Query("SELECT COUNT(a) FROM AlunoModel a")
     fun countAlunos() : Long
-
-
+    fun findByCpf(cpf: String)
 
 }

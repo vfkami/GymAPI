@@ -22,5 +22,8 @@ class MensalidadeModel (
     var pago : Boolean = false,
 
     @Column
-    var dataPagamento : LocalDateTime?
+    var dataPagamento : LocalDateTime?,
+
+    @Column(nullable = false)
+    var valorMensalidade : Double = 0.00
 ){}

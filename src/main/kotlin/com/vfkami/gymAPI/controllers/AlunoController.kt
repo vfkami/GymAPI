@@ -66,7 +66,7 @@ class AlunoController (val alunoService: AlunoService, val usuarioService: Usuar
 
         alunoService.save(alunoModel)
         usuarioService.save(usuarioModel)
-        mensalidadeService.save(alunoModel.matricula, alunoModel.diaPagamento)
+        mensalidadeService.save(alunoModel.matricula, alunoDto.diaPagamento, alunoDto.valorMensalidade)
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Aluno matriculado com sucesso!")
     }

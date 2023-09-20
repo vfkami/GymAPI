@@ -16,6 +16,8 @@ class AlunoService (val alunoRepository: AlunoRepository, val usuarioRepository:
     fun existsByCpf(cpf: String) = alunoRepository.existsByCpf(cpf)
     fun existsByMatricula(matricula: String) = alunoRepository.existsByMatricula(matricula)
     fun findByMatricula(matricula : String) = alunoRepository.findById(matricula)
+    fun findByCpf(cpf : String) = alunoRepository.findByCpf(cpf)
+
     fun findAll() = alunoRepository.findAll()
     fun alunosCadastradosCount() = alunoRepository.countAlunos()
     fun findUsuarioAluno(matricula : String) : Optional<AlunoDto> {
