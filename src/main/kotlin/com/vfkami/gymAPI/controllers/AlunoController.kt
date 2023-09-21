@@ -29,7 +29,7 @@ class AlunoController (val alunoService: AlunoService, val usuarioService: Usuar
 
     @GetMapping("/{cpf}")
     fun getAlunoByCpf(@PathVariable(value = "cpf") cpf : String) : ResponseEntity<Any> {
-        val aluno : Optional<AlunoModel> = alunoService.findByMatricula(cpf)
+        val aluno = alunoService.findByCpf(cpf)
 
         if(aluno.isPresent)
             return ResponseEntity.status(HttpStatus.OK).body(aluno.get())

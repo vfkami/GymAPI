@@ -11,6 +11,6 @@ class InstrutorService (val instrutorRepository: InstrutorRepository){
     fun save(instrutorModel : InstrutorModel) = instrutorRepository.save(instrutorModel)
     fun existsByCfe(cfe: String) = instrutorRepository.existsByCFE(cfe)
     fun existsByCpf(cpf: String) = instrutorRepository.existsByCpf(cpf)
-    fun findByCpf(cpf : String) = instrutorRepository.findById(cpf)
+    fun findByCpf(cpf : String) = instrutorRepository.findInstrutorModelByCpf(cpf)
     fun findAll() = instrutorRepository.findAll()
 }

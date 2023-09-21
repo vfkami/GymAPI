@@ -21,8 +21,8 @@ class InstrutorController (val instrutorService: InstrutorService, val usuarioSe
     fun getAllInstrutores() = ResponseEntity.status(HttpStatus.OK).body(instrutorService.findAll())
 
     @GetMapping("/{cpf}")
-    fun getAlunoByCpf(@PathVariable(value = "cpf") cpf : String) : ResponseEntity<Any> {
-        val instrutor : Optional<InstrutorModel> = instrutorService.findByCpf(cpf)
+    fun getInstrutorByCpf(@PathVariable(value = "cpf") cpf : String) : ResponseEntity<Any> {
+        val instrutor = instrutorService.findByCpf(cpf)
 
         if(instrutor.isPresent)
             return ResponseEntity.status(HttpStatus.OK).body(instrutor.get())
