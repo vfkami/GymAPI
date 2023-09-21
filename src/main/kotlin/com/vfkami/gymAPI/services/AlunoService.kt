@@ -14,10 +14,8 @@ class AlunoService (val alunoRepository: AlunoRepository, val usuarioRepository:
     @Transactional
     fun save(alunoModel : AlunoModel) = alunoRepository.save(alunoModel)
     fun existsByCpf(cpf: String) = alunoRepository.existsByCpf(cpf)
-    fun existsByMatricula(matricula: String) = alunoRepository.existsByMatricula(matricula)
-    fun findByMatricula(matricula : String) = alunoRepository.findById(matricula)
+    fun existsById(matricula: String) = alunoRepository.existsById(matricula)
     fun findByCpf(cpf : String) = alunoRepository.findAlunoModelByCpf(cpf)
-
     fun findAll() = alunoRepository.findAll()
     fun alunosCadastradosCount() = alunoRepository.countAlunos()
     fun findUsuarioAluno(matricula : String) : Optional<AlunoDto> {

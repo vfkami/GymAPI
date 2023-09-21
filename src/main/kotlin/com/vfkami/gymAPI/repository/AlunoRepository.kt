@@ -9,7 +9,6 @@ import javax.swing.text.html.Option
 
 @Repository
 interface AlunoRepository : JpaRepository<AlunoModel, String> {
-    fun existsByMatricula(matricula : String) : Boolean
     fun existsByCpf(cpf : String) : Boolean
     @Query("SELECT COUNT(a) FROM AlunoModel a")
     fun countAlunos() : Long

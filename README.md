@@ -7,6 +7,7 @@ instructors to create training sessions for their students.
 # Requirements
 - Kotlin 1.8.22
 - Java 17
+- PostgreSQL
 - Good IDE like [IntelliJ](https://www.jetbrains.com/idea/) or code editor like [VSCode](https://code.visualstudio.com/)
 
 # Usage
@@ -25,7 +26,7 @@ The Requests for GymAPI should follow this pattern:
 | `POST` | Used to create a new record.                  |
 | `PUT`  | Update data in a record or change its status. |
 
-If you need more details about the endpoins, see the [detailed API-README](API-README.md)
+If you need more details about the endpoins, see the [detailed API Documentation](API-README.md)
 # Authors
 - M.Sc Vinicius Queiroz - [Mail-me](mailto:viniciusqquei@gmail.com) 📩 
 

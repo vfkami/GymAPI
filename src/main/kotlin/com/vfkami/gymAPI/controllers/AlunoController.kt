@@ -53,7 +53,7 @@ class AlunoController (val alunoService: AlunoService, val usuarioService: Usuar
         if(usuarioService.existsByLogin(alunoDto.login))
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Usuário já existe com o login: ${alunoDto.login}")
 
-        if(alunoService.existsByMatricula(novaMatricula))
+        if(alunoService.existsById(novaMatricula))
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Erro ao gerar número de matrícula")
 
         val alunoModel = AlunoModel()
