@@ -57,4 +57,10 @@ class Utils {
 
         return today.plusDays(diaVencimento.toLong() - today.dayOfMonth)
     }
+
+    fun validaFormatoHora(input: String): Boolean {
+        val regex = Regex("^([0-1]\\d|2[0-3]):[0-5]\\d:[0-5]\\d$")
+        return regex.matches(input)
+    }
+
 }

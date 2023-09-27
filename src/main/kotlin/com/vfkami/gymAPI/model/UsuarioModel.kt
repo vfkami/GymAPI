@@ -28,5 +28,4 @@ class UsuarioModel (
     var ativo: Boolean  = true,
 
     var dataExclusao: LocalDateTime? = null,
-
 )
