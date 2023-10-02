@@ -16,12 +16,34 @@ class TreinoService (val treinoRepository: TreinoRepository, val exercicioTreino
     fun existsById(id : UUID) = treinoRepository.existsById(id)
     fun findById(id : UUID) = treinoRepository.findById(id)
     fun findByMatricula(matricula : String) = treinoRepository.findByMatricula(matricula)
+    fun existsByMatricula(matricula : String) = treinoRepository.existsByMatricula(matricula)
+    fun existsByMatriculaAndAtivo(matricula : String, ativo : Boolean) = treinoRepository.existsByMatriculaAndAtivo(matricula, ativo)
+    fun findByMatriculaAndAtivo(matricula : String, ativo : Boolean) = treinoRepository.findByMatriculaAndAtivo(matricula, ativo)
     @Transactional
-    fun updateTreino(id : UUID) : TreinoModel {
-        var treinoModel = treinoRepository.findById(id)
-        treinoModel.get().ativo = !treinoModel.get().ativo
+    fun desativaTreino(treinoModel : TreinoModel) : TreinoModel {
+        treinoModel.ativo = false
+        return treinoRepository.save(treinoModel)
+    }
+    @Transactional
+    fun desativaAllTreinosAtivosByMatricula(matricula : String){
+        findByMatriculaAndAtivo(matricula, true).forEach { treino -> desativaTreino(treino) }
+    }
 
-        return treinoRepository.save(treinoModel.get())
+    @Transactional
+    fun ativaTreino(treinoModel : TreinoModel) : TreinoModel {
+        desativaAllTreinosAtivosByMatricula(treinoModel.matricula)
+        treinoModel.ativo = true
+        return treinoRepository.save(treinoModel)
+    }
+
+    @Transactional
+    fun atualizaTreino(treinoModel: TreinoModel) : TreinoModel {
+        treinoModel.qtdExecutado += 1
+
+        if (treinoModel.qtdExecutado == treinoModel.qtdTotal)
+            treinoModel.ativo = false
+
+        return treinoRepository.save(treinoModel)
     }
 
 }

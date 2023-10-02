@@ -2,9 +2,7 @@ package com.vfkami.gymAPI.controllers
 
 import com.vfkami.gymAPI.dtos.AlunoDto
 import com.vfkami.gymAPI.model.*
-import com.vfkami.gymAPI.services.AlunoService
-import com.vfkami.gymAPI.services.MensalidadeService
-import com.vfkami.gymAPI.services.UsuarioService
+import com.vfkami.gymAPI.services.*
 import com.vfkami.gymAPI.utils.Utils
 import jakarta.validation.Valid
 import org.springframework.beans.BeanUtils
@@ -23,7 +21,11 @@ import java.util.*
 
 @RestController
 @RequestMapping("/aluno")
-class AlunoController (val alunoService: AlunoService, val usuarioService: UsuarioService, val mensalidadeService: MensalidadeService, val utils: Utils) {
+class AlunoController (val alunoService: AlunoService,
+                       val usuarioService: UsuarioService,
+                       val mensalidadeService: MensalidadeService,
+                       val treinoService: TreinoService,
+                       val utils: Utils) {
     @GetMapping
     fun getAllAlunos() = ResponseEntity.status(HttpStatus.OK).body(alunoService.findAll())
 
@@ -71,4 +73,17 @@ class AlunoController (val alunoService: AlunoService, val usuarioService: Usuar
         return ResponseEntity.status(HttpStatus.CREATED).body("Aluno matriculado com sucesso!")
     }
 
+    @GetMapping("/semtreino")
+    fun getAlunosSemTreino(): ResponseEntity<Any>{
+        val alunos = alunoService.findAll()
+
+        var alunosSemTreino = alunos.filter { aluno ->
+            !treinoService.existsByMatricula(aluno.matricula)
+        }.toMutableList()
+
+        if(alunosSemTreino.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum aluno sem treino encontrado!")
+
+        return ResponseEntity.status(HttpStatus.OK).body(alunosSemTreino)
+    }
 }

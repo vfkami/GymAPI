@@ -39,8 +39,8 @@ This simple TODO list guides the project scope:
 - [x]  Must generate a report of students who haven't paid the monthly fee;
 - [x]  Must allow updating a student's fee payment;
 - [x]  Must generate the next month's fee as soon as the current one is paid;
-- [ ]  Must generate a report of students without training;
-- [ ]  Must generate the current training of the student;
+- [x]  Must generate a report of students without training;
+- [x]  Must generate the current training of the student;
 - [ ]  Must have authentication;
 - [ ]  Password reset;
 - [ ]  Must generate the next month's fee as soon as the current one expires;

@@ -15,6 +15,12 @@ class TreinoModel(
     var matricula : String = "",
 
     @Column(nullable = false)
-    var ativo : Boolean = true
+    var ativo : Boolean = true,
+
+    @Column(nullable = false)
+    var qtdExecutado : Int = 0,
+
+    @Column(nullable = false)
+    var qtdTotal : Int = 0
 
 )

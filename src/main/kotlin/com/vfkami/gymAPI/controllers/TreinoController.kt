@@ -41,6 +41,9 @@ class TreinoController (
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body("Ocorreu um erro: Aluno de matrícula ${cadastroTreinoDto.matricula} não foi encontrado!")
 
+        // Verifica se o aluno não possui treinos ativos. Se possuir, atualizar antigos para false!
+        treinoService.desativaAllTreinosAtivosByMatricula(cadastroTreinoDto.matricula)
+
         val novoTreino = TreinoModel(
             matricula = cadastroTreinoDto.matricula,
             ativo = true
@@ -61,12 +64,28 @@ class TreinoController (
         return ResponseEntity.status(HttpStatus.OK).body(savedTreino)
     }
 
-    @PutMapping("/{id}")
-    fun atualizaTreino(@PathVariable(value = "id") id: String): ResponseEntity<Any> {
+    @PutMapping("/desativa/{id}")
+    fun desativaTreino(@PathVariable(value = "id") id: String): ResponseEntity<Any> {
         if (!treinoService.existsById(UUID.fromString(id)))
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ocorreu um erro: O treino não foi encontrado!")
 
-        return ResponseEntity.status(HttpStatus.OK).body(treinoService.updateTreino(UUID.fromString(id)))
+        return ResponseEntity.status(HttpStatus.OK).body(
+            treinoService.desativaTreino(
+                treinoService.findById(UUID.fromString(id)).get()
+            )
+        )
+    }
+    @PutMapping("/ativa/{id}")
+    fun ativaTreino(@PathVariable(value = "id") id: String): ResponseEntity<Any> {
+        if (!treinoService.existsById(UUID.fromString(id)))
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ocorreu um erro: O treino não foi encontrado!")
+
+        val treino = treinoService.findById(UUID.fromString(id)).get()
+        if(treino.qtdExecutado == treino.qtdTotal)
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED)
+                .body("Não foi possível ativar o treino. O treino foi completado pelo usuário!")
+
+        return ResponseEntity.status(HttpStatus.OK).body(treinoService.ativaTreino(treino))
     }
 
     @GetMapping("/{id}")
@@ -90,7 +109,7 @@ class TreinoController (
         )
     }
 
-    @GetMapping("/matricula/{matricula}")
+    @GetMapping("/todosMatricula/{matricula}")
     fun getTreinosByMatricula(@PathVariable(value = "matricula") matricula: String): ResponseEntity<Any> {
         val treinos = treinoService.findByMatricula(matricula)
 
@@ -117,4 +136,26 @@ class TreinoController (
 
         return ResponseEntity.status(HttpStatus.OK).body(listaTreinoDto)
     }
+
+    @GetMapping("/matricula/{matricula}")
+    fun getTreinoAtualByMatricula(@PathVariable(value = "matricula") matricula: String): ResponseEntity<Any> {
+        val treinos = treinoService.findByMatriculaAndAtivo(matricula, true)
+
+        if (treinos.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Não foram encontrados treinos ativos para a matrícula ${matricula}!")
+
+        val treino = treinos.first()
+        val listaExercicios = exercicioTreinoService.getListaExerciciosByIdTreino(treino.id)
+
+        if (listaExercicios.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Ocorreu um erro: Um ou mais exercícios não foram encontrados!")
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(TreinoDto(treino = treinoService.atualizaTreino(treino), exercicios = listaExercicios))
+    }
+
+
+
 }
